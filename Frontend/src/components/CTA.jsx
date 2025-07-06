@@ -22,7 +22,7 @@ function Cta() {
         </div>
 
         <div className="space-y-4 lg:col-start-2">
-          <a href="/demo">
+          <a href="https://youtu.be/RogdnodHS_4?feature=shared">
             <Button className="w-full md:mr-4 md:w-auto cursor-pointer h-15">
               <b>Check Demo</b>
             </Button>
