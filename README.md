@@ -11,6 +11,8 @@ Placementor is an advanced interview preparation platform designed to assist use
   <img src="Readme_img/flow.png" alt="Demo" width="1000" />
 </p>
 
+## Demo: [Youtube Video](https://youtu.be/RogdnodHS_4)
+
 ## Table of Contents
 
 - [Features](#features)
