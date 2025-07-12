@@ -1,21 +1,20 @@
-
 function Statistics() {
   const stats = [
     {
-      quantity: "2.7K+",
-      description: "Users",
+      quantity: "10",
+      description: "Tailored questions per interview",
     },
     {
-      quantity: "1.8K+",
-      description: "Subscribers",
+      quantity: "4+",
+      description: "AI Agents working in sync",
     },
     {
-      quantity: "112",
-      description: "Downloads",
+      quantity: "3-step",
+      description: "Plan. Practice. Improve.",
     },
     {
-      quantity: "4",
-      description: "Products",
+      quantity: "100%",
+      description: "Custom questions from your resume",
     },
   ];
 
