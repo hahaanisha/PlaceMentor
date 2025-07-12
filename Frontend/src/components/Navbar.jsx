@@ -19,16 +19,28 @@ import { LogoIcon } from "./Icons";
 
 const routeList = [
   {
+    href: "#about",
+    label: "About",
+  },
+  {
     href: "#features",
     label: "Features",
+  },
+  {
+    href: "#cta",
+    label: "Demo",
   },
   {
     href: "#testimonials",
     label: "Testimonials",
   },
   {
-    href: "#pricing",
-    label: "Pricing",
+    href: "#team",
+    label: "Team",
+  },
+  {
+    href: "#newsletter",
+    label: "Newsletter",
   },
   {
     href: "#faq",
@@ -69,7 +81,7 @@ function Navbar() {
               <SheetContent side="left">
                 <SheetHeader>
                   <SheetTitle className="font-bold text-xl">
-                   PlaceMentor
+                    PlaceMentor
                   </SheetTitle>
                 </SheetHeader>
                 <nav className="flex flex-col justify-center items-center gap-2 mt-4">
