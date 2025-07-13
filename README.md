@@ -82,7 +82,7 @@ Placementor is an advanced interview preparation platform designed to assist use
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/tejasgadge2504/PlaceMentor
+   git clone https://github.com/hahaanisha/PlaceMentor
    ```
 
 2. Navigate to the project directory:
