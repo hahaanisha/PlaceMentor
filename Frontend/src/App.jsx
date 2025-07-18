@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Suspense, Component } from "react";
 import InterviewSetup from "./pages/dashboard/InterviewSetup";
