@@ -10,6 +10,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default defineConfig({
+  base: "/", // Change this if deploying to a subdirectory
   plugins: [
     tailwindcss(),
     react(),
@@ -38,6 +39,14 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+    },
+  },
+  optimizeDeps: {
+    include: ["@clerk/clerk-react"],
+  },
+  build: {
+    commonjsOptions: {
+      include: [/node_modules/],
     },
   },
 });
