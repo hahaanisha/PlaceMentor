@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,9 @@ const InterviewPage = () => {
   const [userAnswer, setUserAnswer] = useState("");
   const [loading, setLoading] = useState(false);
   const [feedbackRes, setFeedbackRes] = useState(null);
+  const [timer, setTimer] = useState(60);
+  const [timerActive, setTimerActive] = useState(false);
+  const timerRef = useRef(null);
   const navigate = useNavigate();
   const Qcount = parseInt(localStorage.getItem("QuestionCount"), 10);
 
@@ -23,6 +26,43 @@ const InterviewPage = () => {
     resetTranscript,
     browserSupportsSpeechRecognition,
   } = useSpeechRecognition();
+
+  // ✅ Text-to-Speech function
+  const speakQuestion = (text) => {
+    const synth = window.speechSynthesis;
+    if (!synth) return;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    utterance.rate = 1;
+    synth.speak(utterance);
+  };
+
+  // 🗣️ Automatically speak question on load
+  useEffect(() => {
+    if (questionData?.question) {
+      speakQuestion(questionData.question);
+    }
+  }, [questionData]);
+
+  useEffect(() => {
+    if (timerActive && timer > 0) {
+      timerRef.current = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    } else if (timer === 0) {
+      clearInterval(timerRef.current);
+      SpeechRecognition.stopListening();
+      setUserAnswer(transcript);
+      setTimerActive(false);
+    }
+    return () => clearInterval(timerRef.current);
+  }, [timerActive, timer]);
+
+  const formatTime = (secs) => {
+    const minutes = Math.floor(secs / 60);
+    const seconds = secs % 60;
+    return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  };
 
   if (!browserSupportsSpeechRecognition) {
     return (
@@ -43,7 +83,6 @@ const InterviewPage = () => {
         }
       );
       setFeedbackRes(response.data);
-      console.log("Feedback Response:", response.data);
     } catch (error) {
       console.error("Error fetching feedback:", error);
     } finally {
@@ -53,48 +92,31 @@ const InterviewPage = () => {
 
   const handleStartListening = () => {
     resetTranscript();
+    setUserAnswer("");
+    setTimer(60);
+    setTimerActive(true);
     SpeechRecognition.startListening({ continuous: true });
   };
 
   const handleStopListening = () => {
     SpeechRecognition.stopListening();
     setUserAnswer(transcript);
+    setTimerActive(false);
+    clearInterval(timerRef.current);
   };
 
-  const repeatQuestion =async()=>{
-   setLoading(true);
-    try {
-      const storedPlan = localStorage.getItem("InterviewPlan");
-      if (!storedPlan) {
-        throw new Error("No InterviewPlan found in localStorage.");
-      }
-      const parsedPlan = JSON.parse(storedPlan);
-      const response = await axios.post("https://placementor-backend.onrender.com/get-question", {
-        sr_no: Qcount,
-        interview_plan: {
-          interview_plan: parsedPlan,
-        },
-      });
-      navigate("/interview-page", { state: response.data });
-   // Wait a moment then reload
-    setTimeout(() => {
-      window.location.reload();
-    }, 100); // 100ms delay to allow navigation to complete
-
-    } catch (error) {
-      console.error("Error starting interview:", error.message || error);
-    } finally {
-      setLoading(false);
+  const repeatQuestion = async () => {
+    // 🗣️ Just speak the same question again instead of reloading everything
+    if (questionData?.question) {
+      speakQuestion(questionData.question);
     }
   };
 
-  const nextQuestion =async()=>{
-   setLoading(true);
+  const nextQuestion = async () => {
+    setLoading(true);
     try {
       const storedPlan = localStorage.getItem("InterviewPlan");
-      if (!storedPlan) {
-        throw new Error("No InterviewPlan found in localStorage.");
-      }
+      if (!storedPlan) throw new Error("No InterviewPlan found in localStorage.");
       const parsedPlan = JSON.parse(storedPlan);
       const newCount = Qcount + 1;
       const response = await axios.post("https://placementor-backend.onrender.com/get-question", {
@@ -103,15 +125,9 @@ const InterviewPage = () => {
           interview_plan: parsedPlan,
         },
       });
-
       localStorage.setItem("QuestionCount", newCount.toString());
       navigate("/interview-page", { state: response.data });
-
-      // Wait a moment then reload
-    setTimeout(() => {
-      window.location.reload();
-    }, 100); // 100ms delay to allow navigation to complete
-
+      setTimeout(() => window.location.reload(), 100);
     } catch (error) {
       console.error("Error starting interview:", error.message || error);
     } finally {
@@ -145,6 +161,16 @@ const InterviewPage = () => {
                   </span>
                 </div>
               </div>
+
+              {/* 🔁 Repeat Question Button */}
+              <div className="text-center">
+                <Button
+                  onClick={repeatQuestion}
+                  className="mt-4 text-sm bg-yellow-400 hover:bg-yellow-500 text-white px-4 py-2 rounded"
+                >
+                  🔁 Repeat Question (Speak Again)
+                </Button>
+              </div>
             </CardContent>
           </Card>
 
@@ -168,10 +194,10 @@ const InterviewPage = () => {
             </div>
           )}
 
-          <div className="flex justify-center gap-6 mt-6">
+          <div className="flex justify-center gap-6 mt-6 items-center">
             <Button
               onClick={handleStartListening}
-              disabled={listening}
+              disabled={listening || timerActive}
               className="h-12 text-lg bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700"
             >
               🎤 Start Speaking
@@ -184,6 +210,11 @@ const InterviewPage = () => {
             >
               🛑 Stop & Save Answer
             </Button>
+            {timerActive && (
+              <span className="text-xl font-mono text-blue-700">
+                ⌛ {formatTime(timer)}
+              </span>
+            )}
           </div>
 
           {userAnswer && (
@@ -243,22 +274,23 @@ const InterviewPage = () => {
               </div>
               <div className="flex gap-4 justify-around">
                 <Button
-                
-                onClick={repeatQuestion}
-                disabled={feedbackRes.repeatStatus && feedbackRes.score>=4 ? true:false}
-                className="cursor-pointer h-12 text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-              >
-                Repeat
-              </Button>
-              <Button
-                onClick={nextQuestion}
-                disabled={feedbackRes.repeatStatus&& feedbackRes.score>=4 ? false:true}
-                className="cursor-pointer h-12 text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-              >
-                Next Question
-              </Button>
+                  onClick={repeatQuestion}
+                  className="cursor-pointer h-12 text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                >
+                  Repeat
+                </Button>
+                <Button
+                  onClick={nextQuestion}
+                  disabled={feedbackRes.score < 6}
+                  className="cursor-pointer h-12 text-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                >
+                  Next Question
+                </Button>
               </div>
-              <p className="text-red-500">* you can move to next question only when score if greater than equals to 6</p>
+              <p className="text-red-500">
+                * You can move to next question only when score is greater than
+                or equal to 6
+              </p>
             </div>
           </div>
         )}
