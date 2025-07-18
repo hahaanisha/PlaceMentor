@@ -18,6 +18,10 @@ dev-dist
 
 # Environment variables
 .env
+.env.local
+.env.production
+node_modules/
+dist/
 
 # Editor directories and files
 .vscode/*
