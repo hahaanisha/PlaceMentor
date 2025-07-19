@@ -39,9 +39,10 @@ Placementor is an advanced interview preparation platform designed to assist use
 
 - **Frontend**: React.js, Tailwind CSS, Axios
 - **Backend**: Python, Flask
-- **AI and NLP**: Agno Framework, Gemini, SpeechRecognition
-- **Data Handling**: JSON
+- **AI and NLP**: Agno Framework, Gemini, SpeechRecognition, DuckDuckGo(Webscraping)
+- **Data Handling**: JSON & localstorage
 - **Version Control**: Git
+- **Authentication**: Clerk
 
 ## Agents
 ### Resume Parser
