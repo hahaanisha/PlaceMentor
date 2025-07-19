@@ -19,7 +19,7 @@ export default function ResumeUploader() {
       const formData = new FormData();
       formData.append("resume", file);
       const response = await axios.post(
-        "https://placementor-backend.onrender.com/parse-resume",
+        "http://127.0.0.1:5000/parse-resume",
         formData,
         {
           headers: {

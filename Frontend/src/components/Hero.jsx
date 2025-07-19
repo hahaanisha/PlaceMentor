@@ -1,6 +1,6 @@
-import { Button, buttonVariants } from "./ui/button";
+import { Button } from "./ui/button";
 import HeroCards from "./HeroCards";
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
+//import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { useNavigate } from "react-router-dom";
 import { useUser, useClerk } from "@clerk/clerk-react";
 
@@ -45,17 +45,19 @@ function Hero() {
             Get Started
           </Button>
 
-          <a
-            rel="noreferrer noopener"
-            href="https://github.com/tejasgadge2504/PlaceMentor"
-            target="_blank"
-            className={`w-full md:w-1/3 ${buttonVariants({
-              variant: "outline",
-            })}`}
+          <Button
+            variant="outline"
+            className="w-full md:w-1/3 cursor-pointer"
+            onClick={() => {
+              if (isSignedIn) {
+                navigate("/ats");
+              } else {
+                openSignIn();
+              }
+            }}
           >
-            Github Repository
-            <GitHubLogoIcon className="ml-2 w-5 h-5" />
-          </a>
+            Get ATS Score
+          </Button>
         </div>
       </div>
 
