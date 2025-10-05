@@ -30,7 +30,7 @@ const ATSPage = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/evaluate-resume",
+        "https://placementor-backend.onrender.com/evaluate-resume",
         formData
       );
       setFeedback(res.data);
@@ -54,7 +54,7 @@ const ATSPage = () => {
     }
     try {
       const res = await axios.post(
-        "http://localhost:5000/answer-resumeQuestion",
+        "https://placementor-backend.onrender.com/answer-resumeQuestion",
         {
           question,
           resume_text: summary,

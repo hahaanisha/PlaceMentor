@@ -1,3 +1,4 @@
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import InterviewSetup from "./pages/dashboard/InterviewSetup";
 import ResumeUploader from "./pages/dashboard/ResumeUpload";
@@ -5,6 +6,7 @@ import StartInterview from "./pages/dashboard/StartInterview";
 import InterviewPage from "./pages/dashboard/InterviewPage";
 import InterviewSummary from "./pages/dashboard/InterviewSummary";
 import HomePage from "./pages/dashboard/HomePage";
+import CoverLetterPage from "./pages/dashboard/CoverLetterPage";
 import ATSPage from "./pages/dashboard/ATSPage"; // Adjust path if needed
 
 
@@ -121,6 +123,15 @@ const App = () => {
           element={
             <ProtectedRoute>
               <ATSPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/coverletter"
+          element={
+            <ProtectedRoute>
+              <CoverLetterPage />
             </ProtectedRoute>
           }
         />

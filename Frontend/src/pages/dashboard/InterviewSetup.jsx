@@ -35,7 +35,7 @@ export default function InterviewSetup() {
     setLoading(true);
     try {
       const response = await axios.post(
-        "http://127.0.0.1:5000/generate-interview-questions",
+        "https://placementor-backend.onrender.com/generate-interview-questions",
         {
           resume_summary: resumeSummary,
           company: finalCompany,

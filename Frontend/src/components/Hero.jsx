@@ -58,6 +58,33 @@ function Hero() {
           >
             Get ATS Score
           </Button>
+
+          <Button
+            variant="outline"
+            className="w-full md:w-1/3 cursor-pointer my-2"
+            onClick={() => {
+              if (isSignedIn) {
+                navigate("/coverletter");
+              } else {
+                openSignIn();
+              }
+            }}
+          >
+            Generate Cover Letter
+          </Button>
+
+          <Button
+            className="w-full md:w-1/3 cursor-pointer my-2"
+            onClick={() => {
+              const teamSection = document.getElementById("team");
+              if (teamSection) {
+                teamSection.scrollIntoView({ behavior: "smooth" }); // smooth scroll
+              }
+            }}
+          >
+            Contact Us
+          </Button>
+
         </div>
       </div>
 
