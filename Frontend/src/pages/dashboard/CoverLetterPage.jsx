@@ -11,7 +11,7 @@ const CoverLetterPage = () => {
   const [resumeFile, setResumeFile] = useState(null);
   const [coverLetter, setCoverLetter] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [jd, setJd] = useState(""); // 🔹 new state for Job Description
+  const [jd, setJd] = useState(""); // 🔹 state for Job Description
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -21,24 +21,38 @@ const CoverLetterPage = () => {
 
   const generateCoverLetter = async () => {
     if (!resumeFile || !jd.trim()) {
-      alert("Please upload resume and enter job description.");
+      alert("Please upload your resume and enter the job description.");
       return;
     }
+
     setLoading(true);
 
     const formData = new FormData();
-    formData.append("resume_pdf", resumeFile);
-    formData.append("job_description", jd); // 🔹 sending JD to API
+    // ✅ Use the correct field names as expected by your backend
+    formData.append("resume", resumeFile);
+    formData.append("jd", jd);
 
     try {
-      // 🔹 Replace this API URL with your real backend
       const res = await axios.post(
         "https://placementor-backend.onrender.com/generate_cover_letter",
-        formData
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
-      setCoverLetter(res.data.cover_letter); // expecting cover_letter field
+
+      // ✅ Expecting cover_letter key in response
+      if (res.data && res.data.cover_letter) {
+        setCoverLetter(res.data.cover_letter);
+      } else {
+        console.error("Unexpected response:", res.data);
+        alert("Something went wrong while generating the cover letter.");
+      }
     } catch (err) {
       console.error("Cover letter generation failed:", err);
+      alert("Failed to generate cover letter. Please check your backend.");
     } finally {
       setLoading(false);
     }
